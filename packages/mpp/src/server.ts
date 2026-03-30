@@ -2,7 +2,7 @@ import { Method, Receipt } from 'mppx';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { suiCharge } from './method.js';
-import { parseAmountToRaw } from './utils.js';
+import { parseAmountToRaw, withRetry } from './utils.js';
 
 export { suiCharge } from './method.js';
 export { SUI_USDC_TYPE } from './constants.js';
@@ -35,21 +35,11 @@ export function sui(options: SuiServerOptions) {
     async verify({ credential }) {
       const digest = credential.payload.digest;
 
-      let tx: Awaited<ReturnType<typeof client.core.getTransaction<{ balanceChanges: true }>>> | null = null;
-      for (let attempt = 0; attempt < 5; attempt++) {
-        try {
-          tx = await client.core.getTransaction({
-            digest,
-            include: { balanceChanges: true },
-          });
-          break;
-        } catch {
-          if (attempt === 4) throw new Error(`Could not find the referenced transaction [${digest}]`);
-          await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
-        }
-      }
-
-      if (!tx) throw new Error(`Could not find the referenced transaction [${digest}]`);
+      const tx = await withRetry(
+        () => client.core.getTransaction({ digest, include: { balanceChanges: true } }),
+      ).catch(() => {
+        throw new Error(`Could not find the referenced transaction [${digest}]`);
+      });
 
       const resolved = tx.Transaction ?? tx.FailedTransaction;
       if (!resolved?.status.success) {
