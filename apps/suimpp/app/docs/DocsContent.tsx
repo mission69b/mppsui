@@ -79,6 +79,21 @@ export const POST = mpp.charge({ amount: '0.01' })(
       {/* Consumer Track */}
       {track === 'consumer' && (
         <div className="space-y-10">
+          <div className="rounded-lg border border-border bg-surface p-4 flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <div className="text-sm font-medium text-text">Quick start with t2000</div>
+              <div className="text-xs text-muted">
+                Skip the SDK setup — onboard via web app, CLI, or agent skills.
+              </div>
+            </div>
+            <a
+              href="/agent"
+              className="shrink-0 text-xs px-4 py-2 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
+            >
+              Agent setup →
+            </a>
+          </div>
+
           <Step num={1} title="Install">
             <p>
               Install the MPP client library and the Sui payment method:
@@ -349,6 +364,7 @@ app.post('/api/generate', mpp.charge({ amount: '0.01' })(
       <section className="border-t border-border pt-8 space-y-2">
         {[
           { href: '/spec', label: 'Sui charge method spec' },
+          { href: '/discovery', label: 'Discovery spec' },
           { href: '/servers', label: 'Browse servers' },
           {
             href: 'https://www.npmjs.com/package/@suimpp/mpp',

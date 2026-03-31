@@ -13,6 +13,25 @@ interface ReportPayload {
   endpoint?: string;
 }
 
+export async function GET() {
+  return NextResponse.json({
+    name: 'suimpp payment report',
+    method: 'POST',
+    fields: {
+      digest: { type: 'string', required: true },
+      amount: { type: 'string', required: true },
+      serverUrl: { type: 'string', required: false },
+      sender: { type: 'string', required: false },
+      recipient: { type: 'string', required: false },
+      currency: { type: 'string', required: false },
+      network: { type: 'string', required: false, default: 'mainnet' },
+      service: { type: 'string', required: false },
+      endpoint: { type: 'string', required: false },
+    },
+    docs: 'https://suimpp.dev/docs',
+  });
+}
+
 export async function POST(request: NextRequest) {
   let body: ReportPayload;
   try {
