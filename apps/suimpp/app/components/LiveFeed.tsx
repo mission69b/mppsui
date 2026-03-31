@@ -64,7 +64,7 @@ export function LiveFeed() {
     }
 
     fetchPayments();
-    const interval = setInterval(fetchPayments, 5_000);
+    const interval = setInterval(fetchPayments, 2_000);
     return () => clearInterval(interval);
   }, []);
 
