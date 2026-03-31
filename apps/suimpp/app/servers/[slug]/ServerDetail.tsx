@@ -142,7 +142,7 @@ export function ServerDetail({
       <header className="space-y-3">
         <h1 className="text-2xl font-medium">{server.name}</h1>
         {server.description && (
-          <p className="text-sm text-muted max-w-2xl">{server.description}</p>
+          <p className="text-sm text-muted max-w-2xl line-clamp-2">{server.description}</p>
         )}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
           <a
@@ -173,15 +173,18 @@ export function ServerDetail({
         )}
       </header>
 
-      {/* Try / Use this server */}
+      {/* Validate / Use this server */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-lg border border-border bg-surface p-4 space-y-2">
-          <div className="text-xs font-medium text-text">Try an endpoint</div>
+          <div className="text-xs font-medium text-text">Validate</div>
           <CopyBlock code={`npx @suimpp/discovery check ${serverHost}`} />
         </div>
         <div className="rounded-lg border border-border bg-surface p-4 space-y-2">
-          <div className="text-xs font-medium text-text">Use in your agent</div>
-          <CopyBlock code={`mpp.fetch("${server.url}/openai/v1/chat/completions", {\n  method: "POST",\n  body: JSON.stringify({ model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] })\n})`} />
+          <div className="text-xs font-medium text-text">Use with t2000</div>
+          <CopyBlock code={`t2000 pay "${server.url}/openai/v1/chat/completions" \\\n  --data '{"model":"gpt-4o","messages":[{"role":"user","content":"Hello"}]}' \\\n  --max-price 0.05`} />
+          <a href="/agent" className="inline-block text-[11px] text-muted hover:text-text transition-colors">
+            Setup guide →
+          </a>
         </div>
       </div>
 
