@@ -81,6 +81,10 @@ export async function POST(request: NextRequest) {
     pricingMode: ep.paymentInfo.pricingMode ?? 'fixed',
   }));
 
+  const serviceNames = new Set(
+    result.discovery.endpoints.map((ep) => ep.path.split('/')[1]).filter(Boolean),
+  );
+
   const server = await db.server.create({
     data: {
       name,
@@ -91,7 +95,7 @@ export async function POST(request: NextRequest) {
       recipient: result.probe?.recipient ?? null,
       verified: true,
       status: 'active',
-      services: 0,
+      services: serviceNames.size,
       endpoints: result.discovery.paidEndpoints,
       categories,
       endpointData: JSON.stringify(endpointData),

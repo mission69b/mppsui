@@ -1,5 +1,13 @@
 import Link from 'next/link';
 
+const NAV_LINKS = [
+  { href: '/spec', label: 'Spec' },
+  { href: '/discovery', label: 'Discovery' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/servers', label: 'Servers' },
+  { href: '/explorer', label: 'Explorer' },
+] as const;
+
 export function Nav() {
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
@@ -7,18 +15,15 @@ export function Nav() {
         suimpp.dev
       </Link>
       <div className="flex items-center gap-6 text-sm text-muted">
-        <Link href="/spec" className="hover:text-text transition-colors">
-          Spec
-        </Link>
-        <Link href="/docs" className="hover:text-text transition-colors">
-          Docs
-        </Link>
-        <Link href="/servers" className="hover:text-text transition-colors">
-          Servers
-        </Link>
-        <Link href="/explorer" className="hover:text-text transition-colors">
-          Explorer
-        </Link>
+        {NAV_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="hover:text-text transition-colors hidden sm:block"
+          >
+            {link.label}
+          </Link>
+        ))}
         <a
           href="https://github.com/mission69b/suimpp"
           target="_blank"

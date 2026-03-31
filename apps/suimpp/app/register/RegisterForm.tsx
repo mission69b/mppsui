@@ -118,10 +118,30 @@ export function RegisterForm() {
       <header className="space-y-2">
         <h1 className="text-2xl font-medium">Add your Server</h1>
         <p className="text-sm text-muted leading-relaxed max-w-lg">
-          Register your MPP server to be discoverable on Sui. We&apos;ll validate
-          your OpenAPI spec and start tracking payments automatically.
+          Register your MPP-compatible server to be discoverable by the suimpp
+          explorer and API. Once registered, we&apos;ll begin tracking transactions
+          and activity.
         </p>
       </header>
+
+      {/* Discovery Spec Banner */}
+      <a
+        href="/discovery"
+        className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4 hover:border-accent/30 transition-colors group"
+      >
+        <span className="shrink-0 w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent text-lg">
+          &#x1D4D3;
+        </span>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-text group-hover:text-accent transition-colors">
+            Read the Discovery Spec
+          </div>
+          <div className="text-xs text-muted mt-0.5">
+            Learn how MPP-compatible servers expose their endpoints for discovery.
+          </div>
+        </div>
+        <span className="text-muted group-hover:text-accent transition-colors shrink-0">→</span>
+      </a>
 
       {/* URL Input */}
       <div className="space-y-3">
@@ -291,7 +311,7 @@ export function RegisterForm() {
         <span className="text-xs text-muted">Need help?</span>
         <div className="flex flex-wrap gap-4">
           {[
-            { href: '/spec', label: 'Discovery Spec' },
+            { href: '/discovery', label: 'Discovery Spec' },
             { href: 'https://www.npmjs.com/package/@suimpp/discovery', label: 'Validation CLI' },
             { href: 'https://discord.gg/qE95FPt6Z5', label: 'Discord' },
           ].map((link) => (
@@ -348,10 +368,4 @@ function priceRange(endpoints: DiscoveredEndpoint[]): string | null {
   const max = prices[prices.length - 1];
   if (min === max) return `$${min}`;
   return `$${min}–$${max}`;
-}
-
-interface DiscoveredEndpoint {
-  path: string;
-  method: string;
-  paymentInfo: { price?: string; amount?: string; pricingMode?: string };
 }

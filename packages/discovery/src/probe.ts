@@ -10,6 +10,15 @@ interface MppChallenge {
   [key: string]: unknown;
 }
 
+function decodeRequest(encoded: string): Record<string, string> {
+  try {
+    const json = Buffer.from(encoded, 'base64').toString('utf-8');
+    const parsed = JSON.parse(json);
+    if (parsed && typeof parsed === 'object') return parsed;
+  } catch {}
+  return {};
+}
+
 function extractChallenge(headers: Headers, body: unknown): MppChallenge | null {
   const wwwAuth = headers.get('www-authenticate');
   if (wwwAuth) {
@@ -17,6 +26,13 @@ function extractChallenge(headers: Headers, body: unknown): MppChallenge | null 
     for (const match of wwwAuth.matchAll(/(\w+)="([^"]*)"/g)) {
       params[match[1]] = match[2];
     }
+
+    // mppx encodes amount/currency/recipient inside a base64 `request` field
+    if (params.request) {
+      const decoded = decodeRequest(params.request);
+      Object.assign(params, decoded);
+    }
+
     if (params.recipient || params.currency) return params;
   }
 

@@ -313,6 +313,9 @@ const result = await client.signAndExecuteTransaction({ transaction: tx });
       {/* Links */}
       <section className="border-t border-border pt-8 space-y-2">
         {[
+          { href: '/discovery', label: 'Discovery spec — OpenAPI & validation' },
+          { href: '/agent', label: 'Use APIs with MPP' },
+          { href: '/register', label: 'Register your server' },
           { href: '/docs', label: 'Developer guide' },
           { href: '/servers', label: 'Browse servers' },
           { href: 'https://mpp.dev', label: 'MPP Protocol' },
@@ -321,6 +324,8 @@ const result = await client.signAndExecuteTransaction({ transaction: tx });
           <a
             key={link.href}
             href={link.href}
+            target={link.href.startsWith('/') ? undefined : '_blank'}
+            rel={link.href.startsWith('/') ? undefined : 'noopener noreferrer'}
             className="flex items-center gap-2 text-xs text-muted hover:text-text transition-colors"
           >
             <span className="text-accent">→</span>
