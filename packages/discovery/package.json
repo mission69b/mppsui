@@ -1,6 +1,6 @@
 {
   "name": "@suimpp/discovery",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Sui-specific discovery validation for MPP servers — validate OpenAPI documents and probe 402 payment challenges",
   "type": "module",
   "main": "./dist/index.cjs",
