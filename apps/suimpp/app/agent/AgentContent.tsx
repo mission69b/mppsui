@@ -27,13 +27,13 @@ export function AgentContent() {
       {/* Option 1: t2000 Web App */}
       <section className="space-y-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-base font-medium">Onboard through t2000</h2>
+          <h2 className="text-base font-medium">Web App</h2>
           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-border text-muted">
             Recommended
           </span>
         </div>
         <p className="text-sm text-muted">
-          Create a Sui wallet with onboarding sponsorship — gas covered for your first transactions.
+          Gasless onboarding with USDC sponsorship — start using APIs immediately.
         </p>
         <a
           href="https://t2000.ai"
@@ -41,7 +41,7 @@ export function AgentContent() {
           rel="noopener noreferrer"
           className="inline-block text-sm px-5 py-2.5 rounded-md border border-border text-text hover:border-accent/50 transition-colors"
         >
-          Open t2000 Onboarding
+          Open t2000 Web App
         </a>
       </section>
 

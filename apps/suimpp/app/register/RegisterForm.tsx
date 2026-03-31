@@ -313,7 +313,6 @@ export function RegisterForm() {
           {[
             { href: '/discovery', label: 'Discovery Spec' },
             { href: 'https://www.npmjs.com/package/@suimpp/discovery', label: 'Validation CLI' },
-            { href: 'https://discord.gg/qE95FPt6Z5', label: 'Discord' },
           ].map((link) => (
             <a
               key={link.href}
