@@ -40,12 +40,12 @@ jobs:
       - run: pnpm build
 
       - name: Publish @suimpp/mpp
-        run: pnpm --filter @suimpp/mpp publish --no-git-checks --access public
+        run: pnpm --filter @suimpp/mpp publish --no-git-checks --access public || echo "Already published or skipped"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @suimpp/discovery
-        run: pnpm --filter @suimpp/discovery publish --no-git-checks --access public
+        run: pnpm --filter @suimpp/discovery publish --no-git-checks --access public || echo "Already published or skipped"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
