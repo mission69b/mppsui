@@ -9,6 +9,8 @@ interface ReportPayload {
   currency?: string;
   network?: string;
   serverUrl?: string;
+  service?: string;
+  endpoint?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -30,7 +32,17 @@ export async function POST(request: NextRequest) {
     ? await db.payment.findUnique({ where: { digest: body.digest } })
     : null;
   if (existing) {
-    return NextResponse.json({ ok: true, id: existing.id, duplicate: true });
+    if (body.service || body.endpoint) {
+      await db.payment.update({
+        where: { id: existing.id },
+        data: {
+          ...(body.service ? { service: body.service } : {}),
+          ...(body.endpoint ? { endpoint: body.endpoint } : {}),
+          ...(body.sender && !existing.sender ? { sender: body.sender } : {}),
+        },
+      });
+    }
+    return NextResponse.json({ ok: true, id: existing.id, enriched: true });
   }
 
   let serverId: number | null = null;
@@ -69,6 +81,8 @@ export async function POST(request: NextRequest) {
       amount: body.amount,
       currency: body.currency,
       network: body.network ?? 'mainnet',
+      service: body.service ?? '',
+      endpoint: body.endpoint ?? '',
     },
   });
 

@@ -8,6 +8,8 @@ interface Payment {
   endpoint: string;
   amount: string;
   digest: string | null;
+  sender: string | null;
+  network: string;
   createdAt: string;
   server: { name: string };
 }
@@ -16,26 +18,27 @@ function timeAgo(date: string) {
   const seconds = Math.floor(
     (Date.now() - new Date(date).getTime()) / 1000,
   );
-  if (seconds < 60) return `${seconds}s`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
-  return `${Math.floor(seconds / 86400)}d`;
-}
-
-function endpointShorthand(endpoint: string) {
-  const parts = endpoint.split('/').filter(Boolean);
-  const last = parts[parts.length - 1] ?? endpoint;
-  return last.replace(/_/g, ' ');
+  if (seconds < 5) return 'just now';
+  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
 }
 
 function formatUSDC(amount: string) {
   const num = parseFloat(amount);
   if (isNaN(num)) return amount;
-  return `$${num < 0.01 ? num.toFixed(4) : num.toFixed(2)}`;
+  if (num < 0.01) return `${num.toFixed(4)} USDC`;
+  return `${num.toFixed(3)} USDC`;
 }
 
-function suiscanUrl(digest: string) {
-  return `https://suiscan.xyz/mainnet/tx/${digest}`;
+function truncateDigest(digest: string) {
+  if (digest.length <= 12) return digest;
+  return `${digest.slice(0, 7)}...${digest.slice(-4)}`;
+}
+
+function suiscanUrl(digest: string, network: string) {
+  return `https://suiscan.xyz/${network}/tx/${digest}`;
 }
 
 export function LiveFeed() {
@@ -45,20 +48,20 @@ export function LiveFeed() {
   useEffect(() => {
     async function fetchPayments() {
       try {
-        const res = await fetch('/api/payments?limit=10');
+        const res = await fetch('/api/payments?limit=15');
         if (res.ok) {
           const data = await res.json();
           setPayments(data);
         }
       } catch {
-        // silently fail — empty state handles it
+        // silently fail
       } finally {
         setLoading(false);
       }
     }
 
     fetchPayments();
-    const interval = setInterval(fetchPayments, 30_000);
+    const interval = setInterval(fetchPayments, 5_000);
     return () => clearInterval(interval);
   }, []);
 
@@ -66,12 +69,12 @@ export function LiveFeed() {
     return (
       <div className="rounded-lg border border-border bg-surface p-6">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-sm font-medium">Live</span>
+          <span className="text-sm font-medium">Live Payments</span>
           <span className="w-2 h-2 rounded-full bg-muted animate-pulse" />
         </div>
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-4 bg-border/50 rounded animate-pulse" />
+            <div key={i} className="h-12 bg-border/30 rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -80,46 +83,86 @@ export function LiveFeed() {
 
   return (
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
-        <span className="text-sm font-medium">Live</span>
-        <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Live Payments</span>
+          <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+        </div>
+        <span className="text-xs text-muted font-mono">
+          {payments.length > 0 ? `${payments.length} recent` : ''}
+        </span>
       </div>
 
       {payments.length === 0 ? (
-        <div className="p-6 text-center text-muted text-sm">
-          No payments yet — be the first.
+        <div className="p-8 text-center space-y-2">
+          <p className="text-muted text-sm">No payments yet</p>
+          <p className="text-muted/60 text-xs">
+            Payments from MPP servers will appear here in real-time.
+          </p>
         </div>
       ) : (
-        <div className="divide-y divide-border">
-          {payments.map((p) => (
-            <div
-              key={p.id}
-              className="flex items-center gap-4 px-4 py-2.5 text-xs hover:bg-border/20 transition-colors"
-            >
-              <span className="font-mono text-muted w-8 shrink-0 text-right">
-                {timeAgo(p.createdAt)}
-              </span>
-              <span className="text-text w-24 truncate">{p.service}</span>
-              <span className="font-mono text-muted flex-1 truncate">
-                {endpointShorthand(p.endpoint)}
-              </span>
-              <span className="font-mono text-accent w-16 text-right shrink-0">
-                {formatUSDC(p.amount)}
-              </span>
-              {p.digest && (
-                <a
-                  href={suiscanUrl(p.digest)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted hover:text-accent transition-colors shrink-0"
-                  title="View on Suiscan"
-                >
-                  ↗
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="hidden sm:grid grid-cols-[1fr_1fr_auto_auto] gap-4 px-4 py-2 text-[10px] uppercase tracking-wider text-muted/60 border-b border-border/50">
+            <span>Service</span>
+            <span>Transaction</span>
+            <span className="text-right">Amount</span>
+            <span className="text-right">Time</span>
+          </div>
+          <div className="divide-y divide-border/50">
+            {payments.map((p) => (
+              <div
+                key={p.id}
+                className="group px-4 py-3 hover:bg-border/10 transition-colors"
+              >
+                <div className="sm:grid sm:grid-cols-[1fr_1fr_auto_auto] sm:gap-4 sm:items-center flex flex-col gap-1.5">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      {p.service ? (
+                        <span className="text-xs text-text font-medium truncate">
+                          {p.service}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted truncate">
+                          {p.server.name}
+                        </span>
+                      )}
+                    </div>
+                    {p.endpoint && (
+                      <span className="text-[11px] font-mono text-muted truncate block">
+                        {p.endpoint}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="font-mono text-[11px] min-w-0">
+                    {p.digest ? (
+                      <a
+                        href={suiscanUrl(p.digest, p.network || 'mainnet')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted hover:text-accent transition-colors"
+                        title={p.digest}
+                      >
+                        {truncateDigest(p.digest)}{' '}
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                      </a>
+                    ) : (
+                      <span className="text-muted/40">pending</span>
+                    )}
+                  </div>
+
+                  <span className="font-mono text-xs text-accent text-right whitespace-nowrap">
+                    {formatUSDC(p.amount)}
+                  </span>
+
+                  <span className="font-mono text-[11px] text-muted text-right whitespace-nowrap">
+                    {timeAgo(p.createdAt)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
