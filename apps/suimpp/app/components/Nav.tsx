@@ -1,0 +1,24 @@
+import Link from 'next/link';
+
+export function Nav() {
+  return (
+    <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
+      <Link href="/" className="font-mono text-sm font-medium text-accent">
+        suimpp.dev
+      </Link>
+      <div className="flex items-center gap-6 text-sm text-muted">
+        <Link href="/servers" className="hover:text-text transition-colors">
+          Servers
+        </Link>
+        <a
+          href="https://github.com/mission69b/mppsui"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-text transition-colors"
+        >
+          GitHub
+        </a>
+      </div>
+    </nav>
+  );
+}

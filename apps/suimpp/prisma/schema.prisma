@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Server {
+  id         Int       @id @default(autoincrement())
+  name       String
+  url        String    @unique
+  openapiUrl String    @map("openapi_url")
+  verified   Boolean   @default(false)
+  services   Int       @default(0)
+  endpoints  Int       @default(0)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  payments   Payment[]
+
+  @@map("servers")
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  serverId  Int      @map("server_id")
+  server    Server   @relation(fields: [serverId], references: [id])
+  service   String
+  endpoint  String
+  amount    String
+  digest    String?  @unique
+  sender    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@index([serverId])
+  @@map("payments")
+}

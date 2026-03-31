@@ -1,0 +1,77 @@
+function CodeBlock({
+  title,
+  code,
+  cta,
+  href,
+}: {
+  title: string;
+  code: string;
+  cta: string;
+  href: string;
+}) {
+  return (
+    <div className="rounded-lg border border-border bg-surface overflow-hidden flex flex-col">
+      <div className="px-4 py-3 border-b border-border">
+        <span className="text-sm font-medium">{title}</span>
+      </div>
+      <pre className="p-4 font-mono text-xs leading-relaxed text-muted flex-1 overflow-x-auto">
+        <code>{code}</code>
+      </pre>
+      <div className="px-4 py-3 border-t border-border">
+        <a
+          href={href}
+          className="text-xs text-accent hover:text-accent-hover transition-colors"
+        >
+          {cta} →
+        </a>
+      </div>
+    </div>
+  );
+}
+
+const CLIENT_CODE = `import { Mppx } from 'mppx/client';
+import { sui } from '@mppsui/mpp/client';
+import { SuiGrpcClient } from '@mysten/sui/grpc';
+
+const mpp = Mppx.create({
+  methods: [sui({ client, signer })],
+});
+
+const res = await mpp.fetch(
+  'https://mpp.t2000.ai/openai/v1/chat/completions',
+  { method: 'POST', body: JSON.stringify({ ... }) }
+);`;
+
+const SERVER_CODE = `import { Mppx } from 'mppx/nextjs';
+import { sui } from '@mppsui/mpp/server';
+
+const mpp = Mppx.create({
+  realm: 'api.example.com',
+  methods: [sui({
+    currency: SUI_USDC_TYPE,
+    recipient: '0x...',
+  })],
+});
+
+export const POST = mpp.protect(handler, {
+  amount: '0.01',
+});`;
+
+export function CodeBlocks() {
+  return (
+    <div className="grid md:grid-cols-2 gap-6">
+      <CodeBlock
+        title="Use APIs"
+        code={CLIENT_CODE}
+        cta="Read docs"
+        href="/docs"
+      />
+      <CodeBlock
+        title="Accept Payments"
+        code={SERVER_CODE}
+        cta="Provider guide"
+        href="/docs"
+      />
+    </div>
+  );
+}
