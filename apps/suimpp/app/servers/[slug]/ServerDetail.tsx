@@ -30,11 +30,6 @@ interface Stats {
   agents: number;
 }
 
-interface TimelinePoint {
-  date: string;
-  volume: number;
-}
-
 interface Payment {
   id: number;
   digest: string | null;
@@ -48,16 +43,10 @@ interface Payment {
 interface ServerDetailProps {
   server: ServerInfo;
   stats: Stats;
-  volumeTimeline: TimelinePoint[];
   txnsByEndpoint: Record<string, number>;
   recentPayments: Payment[];
 }
 
-interface ServiceGroup {
-  name: string;
-  endpoints: EndpointInfo[];
-  txns: number;
-}
 
 function truncate(s: string, start = 6, end = 4) {
   if (s.length <= start + end + 3) return s;
@@ -83,40 +72,10 @@ function timeAgo(date: string) {
   return `${Math.floor(seconds / 86400)}d ago`;
 }
 
-function priceRange(endpoints: EndpointInfo[]): string {
-  const prices = endpoints
-    .map((ep) => parseFloat(ep.price ?? ''))
-    .filter((p) => !isNaN(p));
-  if (prices.length === 0) return 'dynamic';
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
-  if (min === max) return `$${min}`;
-  return `$${min}–$${max}`;
-}
-
-function groupByService(
-  endpoints: EndpointInfo[],
-  txnsByEndpoint: Record<string, number>,
-): ServiceGroup[] {
-  const groups: Record<string, EndpointInfo[]> = {};
-  for (const ep of endpoints) {
-    const service = ep.path.split('/')[1] || 'other';
-    if (!groups[service]) groups[service] = [];
-    groups[service].push(ep);
-  }
-  return Object.entries(groups)
-    .map(([name, eps]) => ({
-      name,
-      endpoints: eps,
-      txns: eps.reduce((sum, ep) => sum + (txnsByEndpoint[ep.path] ?? 0), 0),
-    }))
-    .sort((a, b) => b.txns - a.txns || a.name.localeCompare(b.name));
-}
 
 export function ServerDetail({
   server,
   stats,
-  volumeTimeline,
   txnsByEndpoint,
   recentPayments,
 }: ServerDetailProps) {
@@ -133,7 +92,6 @@ export function ServerDetail({
     }
   })();
 
-  const serviceGroups = groupByService(parsedEndpoints, txnsByEndpoint);
   const serverHost = server.url.replace('https://', '');
 
   return (
@@ -153,10 +111,29 @@ export function ServerDetail({
           >
             {serverHost} ↗
           </a>
-          {server.services > 0 && (
-            <span>{server.services} services, {server.endpoints} endpoints</span>
+          <span className="text-border">·</span>
+          <span>{server.endpoints} endpoints</span>
+          <span className="text-border">·</span>
+          <span>{stats.txns} txns</span>
+          {stats.volume > 0 && (
+            <>
+              <span className="text-border">·</span>
+              <span>${stats.volume.toLocaleString()}</span>
+            </>
           )}
-          {server.services === 0 && <span>{server.endpoints} endpoints</span>}
+          {stats.agents > 0 && (
+            <>
+              <span className="text-border">·</span>
+              <span>{stats.agents} agent{stats.agents !== 1 ? 's' : ''}</span>
+            </>
+          )}
+          {recentPayments.length > 0 && (
+            <>
+              <span className="text-border">·</span>
+              <span>{timeAgo(recentPayments[0].createdAt)}</span>
+            </>
+          )}
+          <span className="text-border">·</span>
           <span>Registered {registeredDate}</span>
         </div>
         {server.categories && (
@@ -188,94 +165,13 @@ export function ServerDetail({
         </div>
       </div>
 
-      {/* Stats + Volume side-by-side on desktop */}
-      <div className="grid lg:grid-cols-[1fr_2fr] gap-6">
-        <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
-          <StatCard label="Transactions" value={stats.txns.toLocaleString()} />
-          <StatCard label="Volume" value={`$${stats.volume.toLocaleString()}`} />
-          <StatCard label="Agents" value={String(stats.agents)} />
-          <StatCard
-            label="Latest"
-            value={
-              recentPayments.length > 0
-                ? timeAgo(recentPayments[0].createdAt)
-                : '—'
-            }
-          />
-        </div>
-
-        {volumeTimeline.length > 0 && (
-          <div className="rounded-lg border border-border bg-surface p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-sm font-medium">Volume</h3>
-              <span className="text-[10px] font-mono text-muted">
-                {volumeTimeline.length} {volumeTimeline.length === 1 ? 'day' : 'days'}
-              </span>
-            </div>
-            <div className="h-36 flex items-end gap-[2px]">
-              {(() => {
-                const maxVol = Math.max(...volumeTimeline.map((d) => d.volume), 0.01);
-                return volumeTimeline.map((d, i) => {
-                  const height = Math.max((d.volume / maxVol) * 100, 2);
-                  return (
-                    <div
-                      key={i}
-                      className="flex-1 group relative flex flex-col items-center justify-end"
-                    >
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-bg border border-border text-[10px] font-mono text-text whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                        ${d.volume.toFixed(2)}
-                        <div className="text-muted">
-                          {new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </div>
-                      </div>
-                      <div
-                        className="w-full rounded-t bg-accent/60 hover:bg-accent transition-colors cursor-default"
-                        style={{ height: `${height}%` }}
-                      />
-                    </div>
-                  );
-                });
-              })()}
-            </div>
-            {volumeTimeline.length > 1 && (
-              <div className="flex justify-between mt-2 text-[10px] font-mono text-muted/50">
-                <span>
-                  {new Date(volumeTimeline[0].date + 'T00:00:00').toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </span>
-                <span>
-                  {new Date(
-                    volumeTimeline[volumeTimeline.length - 1].date + 'T00:00:00',
-                  ).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Endpoints grouped by service */}
-      {serviceGroups.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium">Endpoints</h3>
-            <span className="text-[11px] font-mono text-muted">
-              {parsedEndpoints.length} total across {serviceGroups.length} services
-            </span>
-          </div>
-          {serviceGroups.map((group) => (
-            <ServiceGroupCard
-              key={group.name}
-              group={group}
-              txnsByEndpoint={txnsByEndpoint}
-            />
-          ))}
-        </div>
+      {/* Endpoints */}
+      {parsedEndpoints.length > 0 && (
+        <EndpointsTable
+          endpoints={parsedEndpoints}
+          txnsByEndpoint={txnsByEndpoint}
+          serverUrl={server.url}
+        />
       )}
 
       {/* Recent Payments */}
@@ -350,80 +246,87 @@ export function ServerDetail({
   );
 }
 
-function ServiceGroupCard({
-  group,
+function EndpointsTable({
+  endpoints,
   txnsByEndpoint,
+  serverUrl,
 }: {
-  group: ServiceGroup;
+  endpoints: EndpointInfo[];
   txnsByEndpoint: Record<string, number>;
+  serverUrl: string;
 }) {
-  const [open, setOpen] = useState(true);
+  const [filter, setFilter] = useState('');
+
+  const filtered = filter
+    ? endpoints.filter((ep) =>
+        ep.path.toLowerCase().includes(filter.toLowerCase()),
+      )
+    : endpoints;
 
   return (
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-border/5 transition-colors cursor-pointer"
-      >
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-text capitalize">{group.name}</span>
-          <span className="text-[10px] font-mono text-muted">
-            {group.endpoints.length} endpoint{group.endpoints.length !== 1 ? 's' : ''}
-          </span>
-          {group.txns > 0 && (
-            <span className="text-[10px] font-mono text-muted">
-              {group.txns} txn{group.txns !== 1 ? 's' : ''}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-[10px] font-mono text-muted">
-            {priceRange(group.endpoints)}
-          </span>
-          <span className="text-muted text-xs">{open ? '▾' : '▸'}</span>
-        </div>
-      </button>
-      {open && (
-        <div className="border-t border-border/50">
-          <table className="w-full text-xs">
-            <tbody className="divide-y divide-border/30">
-              {group.endpoints.map((ep, i) => (
-                <tr key={i} className="group/row hover:bg-border/5 transition-colors">
-                  <td className="px-4 py-2 font-mono text-muted">
-                    <CopyableText text={ep.path} />
-                  </td>
-                  <td className="px-4 py-2 font-mono text-muted/60 hidden sm:table-cell w-16">
-                    {ep.method}
-                  </td>
-                  <td className="px-4 py-2 text-right font-mono text-text whitespace-nowrap w-24">
-                    {ep.price ? `$${ep.price}` : 'dynamic'}
-                  </td>
-                  <td className="px-4 py-2 text-right font-mono text-muted w-16">
-                    {txnsByEndpoint[ep.path] ?? 0}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border gap-3">
+        <h3 className="text-sm font-medium shrink-0">Endpoints</h3>
+        <input
+          type="text"
+          placeholder="Filter endpoints..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="flex-1 max-w-xs bg-transparent border border-border rounded px-2.5 py-1 text-xs text-text placeholder:text-muted/40 focus:outline-none focus:border-accent/50"
+        />
+        <span className="text-[11px] font-mono text-muted shrink-0">
+          {filtered.length} of {endpoints.length}
+        </span>
+      </div>
+      <div className="overflow-x-auto max-h-[480px] overflow-y-auto">
+        <table className="w-full text-xs">
+          <thead className="sticky top-0 bg-surface">
+            <tr className="border-b border-border/50">
+              <th className="text-left px-4 py-2 font-medium text-muted/60 text-[10px] uppercase tracking-wider">
+                Endpoint
+              </th>
+              <th className="text-right px-4 py-2 font-medium text-muted/60 text-[10px] uppercase tracking-wider w-24">
+                Price
+              </th>
+              <th className="text-right px-4 py-2 font-medium text-muted/60 text-[10px] uppercase tracking-wider w-16">
+                Txns
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/30">
+            {filtered.map((ep, i) => (
+              <tr key={i} className="group/row hover:bg-border/5 transition-colors">
+                <td className="px-4 py-2 font-mono text-muted">
+                  <CopyableText text={ep.path} copyValue={`${serverUrl}${ep.path}`} />
+                </td>
+                <td className="px-4 py-2 text-right font-mono text-text whitespace-nowrap w-24">
+                  {ep.price ? `$${ep.price}` : 'dynamic'}
+                </td>
+                <td className="px-4 py-2 text-right font-mono text-muted w-16">
+                  {txnsByEndpoint[ep.path] ?? 0}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
 
-function CopyableText({ text }: { text: string }) {
+function CopyableText({ text, copyValue }: { text: string; copyValue?: string }) {
   const [copied, setCopied] = useState(false);
 
   return (
     <button
       onClick={() => {
-        navigator.clipboard.writeText(text).then(() => {
+        navigator.clipboard.writeText(copyValue ?? text).then(() => {
           setCopied(true);
           setTimeout(() => setCopied(false), 1500);
         });
       }}
       className="text-left font-mono text-muted hover:text-text transition-colors cursor-pointer"
-      title="Click to copy"
+      title={`Copy ${copyValue ?? text}`}
     >
       {text}
       <span className="ml-1.5 text-[10px] text-muted/40 opacity-0 group-hover/row:opacity-100 transition-opacity">
@@ -433,13 +336,3 @@ function CopyableText({ text }: { text: string }) {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-border bg-surface p-4 space-y-1">
-      <div className="text-[10px] uppercase tracking-wider text-muted/60">
-        {label}
-      </div>
-      <div className="text-lg font-medium font-mono">{value}</div>
-    </div>
-  );
-}

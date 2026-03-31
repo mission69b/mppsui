@@ -54,18 +54,6 @@ export default async function ServerPage({ params }: Props) {
     allPayments.filter((p) => p.sender).map((p) => p.sender),
   ).size;
 
-  const volumeByDay: Record<string, number> = {};
-  for (const p of allPayments) {
-    const day = p.createdAt.toISOString().slice(0, 10);
-    volumeByDay[day] = (volumeByDay[day] ?? 0) + parseFloat(p.amount || '0');
-  }
-  const volumeTimeline = Object.keys(volumeByDay)
-    .sort()
-    .map((day) => ({
-      date: day,
-      volume: Math.round(volumeByDay[day] * 100) / 100,
-    }));
-
   const txnsByEndpoint: Record<string, number> = {};
   for (const p of allPayments) {
     if (p.endpoint) {
@@ -97,7 +85,6 @@ export default async function ServerPage({ params }: Props) {
               volume: Math.round(volume * 100) / 100,
               agents: uniqueAgents,
             }}
-            volumeTimeline={volumeTimeline}
             txnsByEndpoint={txnsByEndpoint}
             recentPayments={payments.map((p) => ({
               id: p.id,
