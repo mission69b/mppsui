@@ -287,8 +287,11 @@ function EndpointsTable({
                 <td className="px-4 py-2 font-mono text-muted/60 uppercase w-16">
                   {ep.method}
                 </td>
-                <td className="px-4 py-2 font-mono text-muted">
+                <td className="px-4 py-2">
                   <CopyableText text={ep.path} copyValue={`${serverUrl}${ep.path}`} />
+                  {ep.summary && (
+                    <div className="text-[11px] text-muted/50 mt-0.5">{ep.summary}</div>
+                  )}
                 </td>
                 <td className="px-4 py-2 text-right font-mono text-text whitespace-nowrap w-24">
                   {ep.price ? `$${ep.price}` : 'dynamic'}
