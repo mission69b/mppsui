@@ -9,6 +9,8 @@ interface ReportPayload {
   currency?: string;
   network?: string;
   serverUrl?: string;
+  service?: string;
+  endpoint?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -69,6 +71,8 @@ export async function POST(request: NextRequest) {
       amount: body.amount,
       currency: body.currency,
       network: body.network ?? 'mainnet',
+      service: body.service ?? '',
+      endpoint: body.endpoint ?? '',
     },
   });
 
