@@ -8,17 +8,22 @@ datasource db {
 }
 
 model Server {
-  id         Int       @id @default(autoincrement())
-  name       String
-  url        String    @unique
-  openapiUrl String    @map("openapi_url")
-  recipient  String?
-  verified   Boolean   @default(false)
-  services   Int       @default(0)
-  endpoints  Int       @default(0)
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
-  payments   Payment[]
+  id            Int       @id @default(autoincrement())
+  name          String
+  slug          String    @unique
+  url           String    @unique
+  openapiUrl    String    @map("openapi_url")
+  description   String?
+  recipient     String?
+  verified      Boolean   @default(false)
+  status        String    @default("active")
+  services      Int       @default(0)
+  endpoints     Int       @default(0)
+  categories    String    @default("")
+  endpointData  String    @default("[]") @map("endpoint_data")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  payments      Payment[]
 
   @@map("servers")
 }

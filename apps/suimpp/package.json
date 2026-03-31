@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6",
+    "@suimpp/discovery": "workspace:^",
     "next": "^15",
     "react": "^19",
     "react-dom": "^19",
