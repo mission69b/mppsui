@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 
 interface Payment {
   id: number;
-  service: string;
-  endpoint: string;
   amount: string;
   digest: string | null;
   sender: string | null;
@@ -35,6 +33,11 @@ function formatUSDC(amount: string) {
 function truncateDigest(digest: string) {
   if (digest.length <= 12) return digest;
   return `${digest.slice(0, 7)}...${digest.slice(-4)}`;
+}
+
+function truncateAddress(addr: string) {
+  if (addr.length <= 12) return addr;
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
 function suiscanUrl(digest: string, network: string) {
@@ -74,7 +77,7 @@ export function LiveFeed() {
         </div>
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-12 bg-border/30 rounded animate-pulse" />
+            <div key={i} className="h-10 bg-border/30 rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -88,53 +91,47 @@ export function LiveFeed() {
           <span className="text-sm font-medium">Live Payments</span>
           <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
         </div>
-        <span className="text-xs text-muted font-mono">
-          {payments.length > 0 ? `${payments.length} recent` : ''}
-        </span>
+        {payments.length > 0 && (
+          <span className="text-[11px] text-muted font-mono">
+            across all servers
+          </span>
+        )}
       </div>
 
       {payments.length === 0 ? (
         <div className="p-8 text-center space-y-2">
           <p className="text-muted text-sm">No payments yet</p>
           <p className="text-muted/60 text-xs">
-            Payments from MPP servers will appear here in real-time.
+            Payments from registered MPP servers appear here in real-time.
           </p>
         </div>
       ) : (
         <>
-          <div className="hidden sm:grid grid-cols-[1fr_1fr_auto_auto] gap-4 px-4 py-2 text-[10px] uppercase tracking-wider text-muted/60 border-b border-border/50">
-            <span>Service</span>
+          <div className="hidden sm:grid grid-cols-[1fr_auto_auto_auto] gap-4 px-4 py-2 text-[10px] uppercase tracking-wider text-muted/60 border-b border-border/50">
+            <span>Server</span>
             <span>Transaction</span>
             <span className="text-right">Amount</span>
-            <span className="text-right">Time</span>
+            <span className="text-right w-16">Time</span>
           </div>
           <div className="divide-y divide-border/50">
             {payments.map((p) => (
               <div
                 key={p.id}
-                className="group px-4 py-3 hover:bg-border/10 transition-colors"
+                className="group px-4 py-2.5 hover:bg-border/10 transition-colors"
               >
-                <div className="sm:grid sm:grid-cols-[1fr_1fr_auto_auto] sm:gap-4 sm:items-center flex flex-col gap-1.5">
+                <div className="sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4 sm:items-center flex flex-col gap-1">
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      {p.service ? (
-                        <span className="text-xs text-text font-medium truncate">
-                          {p.service}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted truncate">
-                          {p.server.name}
-                        </span>
-                      )}
-                    </div>
-                    {p.endpoint && (
-                      <span className="text-[11px] font-mono text-muted truncate block">
-                        {p.endpoint}
+                    <span className="text-xs text-text font-medium">
+                      {p.server.name}
+                    </span>
+                    {p.sender && (
+                      <span className="text-[11px] font-mono text-muted ml-2 hidden lg:inline">
+                        from {truncateAddress(p.sender)}
                       </span>
                     )}
                   </div>
 
-                  <div className="font-mono text-[11px] min-w-0">
+                  <div className="font-mono text-[11px]">
                     {p.digest ? (
                       <a
                         href={suiscanUrl(p.digest, p.network || 'mainnet')}
@@ -143,8 +140,8 @@ export function LiveFeed() {
                         className="text-muted hover:text-accent transition-colors"
                         title={p.digest}
                       >
-                        {truncateDigest(p.digest)}{' '}
-                        <span className="opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                        {truncateDigest(p.digest)}
+                        <span className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
                       </a>
                     ) : (
                       <span className="text-muted/40">pending</span>
@@ -155,7 +152,7 @@ export function LiveFeed() {
                     {formatUSDC(p.amount)}
                   </span>
 
-                  <span className="font-mono text-[11px] text-muted text-right whitespace-nowrap">
+                  <span className="font-mono text-[11px] text-muted text-right w-16 whitespace-nowrap">
                     {timeAgo(p.createdAt)}
                   </span>
                 </div>
