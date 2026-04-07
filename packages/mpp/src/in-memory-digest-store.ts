@@ -25,8 +25,8 @@ export class InMemoryDigestStore implements DigestStore {
     return true;
   }
 
-  async set(digest: string, ttlMs?: number): Promise<void> {
-    this.store.set(digest, Date.now() + (ttlMs ?? this.ttlMs));
+  async set(digest: string): Promise<void> {
+    this.store.set(digest, Date.now() + this.ttlMs);
   }
 
   private evict(): void {

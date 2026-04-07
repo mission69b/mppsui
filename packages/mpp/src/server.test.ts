@@ -270,10 +270,10 @@ describe('digest replay protection', () => {
   });
 
   it('marks digest before returning receipt (store.set failure = no free call)', async () => {
-    const store: import('./server.js').DigestStore = {
+    const store = {
       has: vi.fn().mockResolvedValue(false),
       set: vi.fn().mockRejectedValue(new Error('Redis down')),
-    };
+    } satisfies import('./server.js').DigestStore;
     mockGetTransaction.mockResolvedValue(buildMockTx());
 
     const serverMethod = suiFn({

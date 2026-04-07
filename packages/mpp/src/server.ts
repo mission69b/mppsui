@@ -10,7 +10,7 @@ export { SUI_USDC_TYPE } from './constants.js';
 
 export interface DigestStore {
   has(digest: string): Promise<boolean>;
-  set(digest: string, ttlMs?: number): Promise<void>;
+  set(digest: string): Promise<void>;
 }
 
 export interface PaymentReport {
@@ -31,18 +31,8 @@ export interface SuiServerOptions {
   network?: 'mainnet' | 'testnet' | 'devnet';
   /** Digest store for replay protection. Required in production. Falls back to in-memory in dev. */
   store?: DigestStore;
-  /** How long to remember used digests (default: 24h). Only applies to the default in-memory store. */
-  digestTtlMs?: number;
-  /**
-   * Called after successful on-chain verification with payment data.
-   * Use to report payments with full request context (e.g., endpoint, service).
-   * When provided, replaces the built-in registryUrl reporting.
-   */
+  /** Called after successful on-chain verification with payment data. */
   onPayment?: (report: PaymentReport) => void;
-  /** @deprecated Use `onPayment` instead. URL to report verified payments to. */
-  registryUrl?: string;
-  /** @deprecated Use `onPayment` instead. Public URL of the server. */
-  serverUrl?: string;
 }
 
 let _defaultStore: DigestStore | undefined;
@@ -59,7 +49,7 @@ function resolveStore(options: SuiServerOptions): DigestStore {
   }
 
   if (!_defaultStore) {
-    _defaultStore = new InMemoryDigestStore(options.digestTtlMs);
+    _defaultStore = new InMemoryDigestStore();
     console.warn(
       '[suimpp] No DigestStore provided. Using in-memory store. ' +
       'This is NOT safe for production or multi-instance deployments.',
@@ -149,12 +139,6 @@ export function sui(options: SuiServerOptions) {
 
       if (options.onPayment) {
         try { options.onPayment(report); } catch {}
-      } else if (options.registryUrl) {
-        fetch(options.registryUrl, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ ...report, serverUrl: options.serverUrl }),
-        }).catch(() => {});
       }
 
       return receipt;
