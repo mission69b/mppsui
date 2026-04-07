@@ -3,9 +3,15 @@ import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { suiCharge } from './method.js';
 import { parseAmountToRaw, withRetry } from './utils.js';
+import { InMemoryDigestStore } from './in-memory-digest-store.js';
 
 export { suiCharge } from './method.js';
 export { SUI_USDC_TYPE } from './constants.js';
+
+export interface DigestStore {
+  has(digest: string): Promise<boolean>;
+  set(digest: string, ttlMs?: number): Promise<void>;
+}
 
 export interface PaymentReport {
   digest: string;
@@ -23,6 +29,10 @@ export interface SuiServerOptions {
   decimals?: number;
   rpcUrl?: string;
   network?: 'mainnet' | 'testnet' | 'devnet';
+  /** Digest store for replay protection. Required in production. Falls back to in-memory in dev. */
+  store?: DigestStore;
+  /** How long to remember used digests (default: 24h). Only applies to the default in-memory store. */
+  digestTtlMs?: number;
   /**
    * Called after successful on-chain verification with payment data.
    * Use to report payments with full request context (e.g., endpoint, service).
@@ -35,6 +45,29 @@ export interface SuiServerOptions {
   serverUrl?: string;
 }
 
+let _defaultStore: DigestStore | undefined;
+
+function resolveStore(options: SuiServerOptions): DigestStore {
+  if (options.store) return options.store;
+
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production') {
+    throw new Error(
+      '[suimpp] DigestStore is required in production. ' +
+      'Provide a Redis or DB-backed store via SuiServerOptions.store. ' +
+      'The default in-memory store is single-instance only and unsafe for multi-instance deployments.',
+    );
+  }
+
+  if (!_defaultStore) {
+    _defaultStore = new InMemoryDigestStore(options.digestTtlMs);
+    console.warn(
+      '[suimpp] No DigestStore provided. Using in-memory store. ' +
+      'This is NOT safe for production or multi-instance deployments.',
+    );
+  }
+  return _defaultStore;
+}
+
 export function sui(options: SuiServerOptions) {
   const network = options.network ?? 'mainnet';
   const decimals = options.decimals ?? 6;
@@ -44,6 +77,7 @@ export function sui(options: SuiServerOptions) {
   });
 
   const normalizedRecipient = normalizeSuiAddress(options.recipient);
+  const digestStore = resolveStore(options);
 
   return Method.toServer(suiCharge, {
     defaults: {
@@ -53,6 +87,13 @@ export function sui(options: SuiServerOptions) {
 
     async verify({ credential }) {
       const digest = credential.payload.digest;
+
+      const alreadyUsed = await digestStore.has(digest);
+      if (alreadyUsed) {
+        throw new Error(
+          `Digest already used: ${digest}. Each transaction can only pay for one API call.`,
+        );
+      }
 
       const tx = await withRetry(
         () => client.core.getTransaction({ digest, include: { balanceChanges: true } }),
@@ -85,6 +126,8 @@ export function sui(options: SuiServerOptions) {
           `Transferred ${transferredRaw} < requested ${requestedRaw} (raw units)`,
         );
       }
+
+      await digestStore.set(digest);
 
       const receipt = Receipt.from({
         method: 'sui',
