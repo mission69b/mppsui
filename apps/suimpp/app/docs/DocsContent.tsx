@@ -11,7 +11,7 @@ export function DocsContent() {
   return (
     <article className="space-y-10">
       <header className="space-y-2">
-        <h1 className="text-2xl font-medium">Developer Guide</h1>
+        <h1 className="font-display text-[32px] leading-[1.1]">Developer Guide</h1>
         <p className="text-sm text-muted max-w-xl leading-relaxed">
           Get started with MPP on Sui — pay for APIs or accept payments on yours.
         </p>
@@ -19,12 +19,14 @@ export function DocsContent() {
 
       {/* Quickstart */}
       <section className="rounded-lg border border-border bg-surface p-5 space-y-4">
-        <div className="text-[10px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
           Quickstart
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <span className="text-xs text-muted">Pay for any API:</span>
+            <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              Pay for any API:
+            </span>
             <CopyBlock
               code={`import { Mppx } from 'mppx/client';
 import { sui } from '@suimpp/mpp/client';
@@ -40,7 +42,9 @@ const res = await mpp.fetch('https://api.example.com/v1/generate', {
             />
           </div>
           <div className="space-y-2">
-            <span className="text-xs text-muted">Accept payments:</span>
+            <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              Accept payments:
+            </span>
             <CopyBlock
               code={`import { Mppx } from 'mppx/nextjs';
 import { sui } from '@suimpp/mpp/server';
@@ -88,7 +92,7 @@ export const POST = mpp.charge({ amount: '0.01' })(
             </div>
             <a
               href="/agent"
-              className="shrink-0 text-xs px-4 py-2 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
+              className="shrink-0 font-mono text-[11px] tracking-[0.1em] uppercase px-4 py-2 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
             >
               Agent setup →
             </a>
@@ -352,7 +356,7 @@ app.post('/api/generate', mpp.charge({ amount: '0.01' })(
               href="https://github.com/mission69b/suimpp/issues/new?title=Register+server&template=register-server.md"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-3 text-xs px-4 py-2 rounded-md border border-accent text-accent hover:bg-accent hover:text-bg transition-colors"
+              className="inline-block mt-3 font-mono text-[11px] tracking-[0.1em] uppercase px-4 py-2 rounded-md border border-accent text-accent hover:bg-accent hover:text-bg transition-colors"
             >
               Register your server →
             </a>
@@ -380,7 +384,7 @@ app.post('/api/generate', mpp.charge({ amount: '0.01' })(
           <a
             key={link.href}
             href={link.href}
-            className="flex items-center gap-2 text-xs text-muted hover:text-text transition-colors"
+            className="flex items-center gap-2 font-mono text-[10px] tracking-[0.08em] uppercase text-muted hover:text-text transition-colors"
           >
             <span className="text-muted">→</span>
             {link.label}
@@ -403,7 +407,7 @@ function TrackButton({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+      className={`px-4 py-2 rounded-lg text-[11px] font-mono uppercase tracking-[0.08em] transition-all cursor-pointer ${
         active
           ? 'bg-surface border border-text/20 text-text'
           : 'border border-border text-muted hover:text-text hover:border-border'
@@ -425,8 +429,10 @@ function Step({
 }) {
   return (
     <section className="space-y-3">
-      <h3 className="text-sm font-medium flex items-center gap-2">
-        <span className="text-muted text-xs font-mono">{num}.</span>
+      <h3 className="font-display text-[18px] leading-[1.2] flex items-center gap-2">
+        <span className="text-muted font-mono text-[10px] tracking-[0.08em] uppercase">
+          {num}.
+        </span>
         {title}
       </h3>
       <div className="text-sm text-muted leading-relaxed space-y-3">

@@ -22,7 +22,7 @@ export function AgentContent() {
   return (
     <article className="space-y-12">
       <header className="space-y-3">
-        <h1 className="text-2xl font-medium">Use in Your Agent</h1>
+        <h1 className="font-display text-[32px] leading-[1.1]">Use in Your Agent</h1>
         <p className="text-sm text-muted max-w-xl leading-relaxed">
           MPP allows you to access hundreds of APIs with micropayments and no API keys
         </p>
@@ -31,7 +31,7 @@ export function AgentContent() {
       {/* Option 1: t2000 Web App */}
       <section className="space-y-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-base font-medium">Web App</h2>
+          <h2 className="font-display text-[24px] leading-[1.15]">Web App</h2>
           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-border text-muted">
             Recommended
           </span>
@@ -43,7 +43,7 @@ export function AgentContent() {
           href="https://app.t2000.ai"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block text-sm px-5 py-2.5 rounded-md border border-border text-text hover:border-accent/50 transition-colors"
+          className="inline-block font-mono text-[11px] tracking-[0.1em] uppercase px-5 py-2.5 rounded-md border border-border text-text hover:border-accent/50 transition-colors"
         >
           Open t2000 Web App
         </a>
@@ -53,7 +53,7 @@ export function AgentContent() {
 
       {/* Option 2: Terminal Install */}
       <section className="space-y-4">
-        <h2 className="text-base font-medium">Terminal Install</h2>
+        <h2 className="font-display text-[24px] leading-[1.15]">Terminal Install</h2>
         <p className="text-sm text-muted">
           Use the t2000 CLI to call any MPP-protected API with automatic payment
         </p>
@@ -64,7 +64,7 @@ export function AgentContent() {
 
       {/* Option 3: Agent Setup */}
       <section className="space-y-4">
-        <h2 className="text-base font-medium">Agent Setup</h2>
+        <h2 className="font-display text-[24px] leading-[1.15]">Agent Setup</h2>
         <p className="text-sm text-muted">
           Connect t2000 to your AI agent via skills or MCP
         </p>
@@ -77,7 +77,7 @@ export function AgentContent() {
               <button
                 key={tab.id}
                 onClick={() => setSetupTab(tab.id)}
-                className={`px-3 py-1.5 rounded-t text-xs font-mono transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-t text-xs font-mono uppercase tracking-[0.08em] transition-colors cursor-pointer ${
                   setupTab === tab.id
                     ? 'bg-surface border border-border border-b-surface text-text'
                     : 'text-muted hover:text-text'

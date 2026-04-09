@@ -7,7 +7,7 @@ export function SpecContent() {
     <article className="space-y-12">
       <header className="space-y-3">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-medium">Sui Charge Method</h1>
+          <h1 className="font-display text-[32px] leading-[1.1]">Sui Charge Method</h1>
           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-border text-muted">
             v1.0
           </span>
@@ -340,7 +340,7 @@ const result = await client.signAndExecuteTransaction({ transaction: tx });
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="space-y-3">
-      <h2 className="text-lg font-medium">{title}</h2>
+      <h2 className="font-display text-[24px] leading-[1.15]">{title}</h2>
       <div className="text-sm text-muted leading-relaxed [&_code]:text-text [&_code]:bg-surface [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:border [&_code]:border-border [&_code]:text-xs [&_code]:font-mono">
         {children}
       </div>
@@ -355,7 +355,7 @@ function FlowStep({ num, title, children }: { num: number; title: string; childr
         {num}
       </span>
       <div>
-        <span className="text-text font-medium text-sm">{title}</span>
+        <span className="text-text font-display text-[18px] leading-[1.2]">{title}</span>
         <div className="mt-1 text-sm text-muted leading-relaxed [&_code]:text-text [&_code]:bg-surface [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:border [&_code]:border-border [&_code]:text-xs [&_code]:font-mono">
           {children}
         </div>

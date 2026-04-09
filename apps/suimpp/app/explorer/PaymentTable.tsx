@@ -86,7 +86,7 @@ export function PaymentTable({
   return (
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <span className="text-sm font-medium">Transactions</span>
+        <span className="font-display text-[18px] leading-[1.2]">Transactions</span>
         <span className="text-[11px] font-mono text-muted">
           {pagination.total.toLocaleString()} total
         </span>

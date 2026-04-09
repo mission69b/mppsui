@@ -52,10 +52,10 @@ export async function TopServers() {
   return (
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <span className="text-sm font-medium">Top Servers</span>
+        <span className="font-display text-[18px] leading-[1.2]">Top Servers</span>
         <Link
           href="/servers"
-          className="text-xs text-muted hover:text-text transition-colors"
+          className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted hover:text-text transition-colors"
         >
           All →
         </Link>

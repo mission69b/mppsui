@@ -20,12 +20,12 @@ export default function Home() {
         <section className="px-6 py-16 md:py-24">
           <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h1 className="text-3xl md:text-4xl font-medium leading-tight">
+              <h1 className="font-display text-[36px] md:text-[40px] font-normal leading-[1.1]">
                 Machine Payments
                 <br />
                 on Sui
               </h1>
-              <p className="text-muted text-lg max-w-md">
+              <p className="text-muted text-base max-w-md leading-relaxed">
                 The open protocol for AI agents to pay for APIs with USDC.
               </p>
               <Suspense
@@ -40,13 +40,13 @@ export default function Home() {
               <div className="flex gap-4 pt-2">
                 <Link
                   href="/register"
-                  className="text-sm px-4 py-2 rounded-md bg-accent text-bg font-medium hover:bg-accent-hover transition-colors"
+                  className="font-mono text-[11px] tracking-[0.1em] uppercase px-5 py-2.5 rounded-md bg-accent text-bg hover:bg-accent-hover transition-colors"
                 >
                   Register Server
                 </Link>
                 <Link
                   href="/agent"
-                  className="text-sm px-4 py-2 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
+                  className="font-mono text-[11px] tracking-[0.1em] uppercase px-5 py-2.5 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
                 >
                   Use APIs
                 </Link>

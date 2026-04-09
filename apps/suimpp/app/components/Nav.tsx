@@ -20,7 +20,7 @@ export function Nav() {
         <Link href="/" className="font-mono text-sm font-medium text-accent">
           suimpp.dev
         </Link>
-        <div className="hidden sm:flex items-center gap-6 text-sm text-muted">
+        <div className="hidden sm:flex items-center gap-6 font-mono text-[11px] tracking-[0.1em] uppercase text-muted">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -48,7 +48,7 @@ export function Nav() {
         </button>
       </div>
       {open && (
-        <div className="sm:hidden border-t border-border px-6 py-3 flex flex-col gap-3 text-sm text-muted">
+        <div className="sm:hidden border-t border-border px-6 py-3 flex flex-col gap-3 font-mono text-[11px] tracking-[0.1em] uppercase text-muted">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}

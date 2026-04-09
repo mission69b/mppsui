@@ -73,7 +73,7 @@ export function LiveFeed() {
     return (
       <div className="rounded-lg border border-border bg-surface p-6">
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-sm font-medium">Live Payments</span>
+          <span className="font-display text-[18px] leading-[1.2]">Live Payments</span>
           <span className="w-2 h-2 rounded-full bg-muted animate-pulse" />
         </div>
         <div className="space-y-3">
@@ -89,7 +89,7 @@ export function LiveFeed() {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Live Payments</span>
+          <span className="font-display text-[18px] leading-[1.2]">Live Payments</span>
           <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
         </div>
         {payments.length > 0 && (

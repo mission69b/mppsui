@@ -10,7 +10,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border px-6 py-8">
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span className="text-xs text-muted">Built on Sui</span>
+        <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">Built on Sui</span>
         <div className="flex flex-wrap items-center gap-4">
           {links.map((link) => (
             <a
@@ -18,7 +18,7 @@ export function Footer() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted hover:text-accent transition-colors"
+              className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted hover:text-accent transition-colors"
             >
               {link.label}
             </a>

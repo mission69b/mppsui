@@ -71,7 +71,7 @@ export function ServerList({
     <div className="space-y-8">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-3">
-          <h1 className="text-2xl font-medium">MPP Servers on Sui</h1>
+          <h1 className="font-display text-[32px] leading-[1.1]">MPP Servers on Sui</h1>
           <p className="text-sm text-muted">
             {servers.length}{' '}
             {servers.length === 1 ? 'server' : 'servers'} ·{' '}
@@ -81,7 +81,7 @@ export function ServerList({
         </div>
         <Link
           href="/register"
-          className="shrink-0 text-sm px-4 py-2 rounded-md border border-accent text-accent hover:bg-accent hover:text-bg transition-colors"
+          className="shrink-0 font-mono text-[11px] tracking-[0.1em] uppercase px-4 py-2 rounded-md border border-accent text-accent hover:bg-accent hover:text-bg transition-colors"
         >
           Register yours →
         </Link>
@@ -89,7 +89,7 @@ export function ServerList({
 
       {/* Sort + Filter Controls */}
       <div className="flex flex-wrap gap-3">
-        <div className="flex items-center gap-2 text-xs text-muted">
+        <div className="flex items-center gap-2 font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
           <span>Sort:</span>
           <select
             value={sort}
@@ -103,7 +103,7 @@ export function ServerList({
           </select>
         </div>
         {categories.length > 1 && (
-          <div className="flex items-center gap-2 text-xs text-muted">
+          <div className="flex items-center gap-2 font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
             <span>Filter:</span>
             <select
               value={categoryFilter}
@@ -197,7 +197,7 @@ export function ServerList({
               </p>
               <Link
                 href="/register"
-                className="inline-block text-sm px-4 py-2 rounded-md border border-accent text-accent hover:bg-accent hover:text-bg transition-colors"
+                className="inline-block font-mono text-[11px] tracking-[0.1em] uppercase px-4 py-2 rounded-md border border-accent text-accent hover:bg-accent hover:text-bg transition-colors"
               >
                 Register your server →
               </Link>

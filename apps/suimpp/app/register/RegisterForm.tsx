@@ -116,7 +116,7 @@ export function RegisterForm() {
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <h1 className="text-2xl font-medium">Add your Server</h1>
+        <h1 className="font-display text-[32px] leading-[1.1]">Add your Server</h1>
         <p className="text-sm text-muted leading-relaxed max-w-lg">
           Register your MPP-compatible server to be discoverable by the suimpp
           explorer and API. Once registered, we&apos;ll begin tracking transactions
@@ -145,7 +145,7 @@ export function RegisterForm() {
 
       {/* URL Input */}
       <div className="space-y-3">
-        <label className="text-xs text-muted" htmlFor="server-url">
+        <label className="font-mono text-[10px] tracking-[0.1em] uppercase text-muted" htmlFor="server-url">
           Server Base URL
         </label>
         <div className="flex gap-2">
@@ -162,7 +162,7 @@ export function RegisterForm() {
           <button
             onClick={handleValidate}
             disabled={!url.trim() || stage === 'validating' || stage === 'registering'}
-            className="px-5 py-2.5 rounded-lg bg-accent text-bg text-sm font-medium hover:bg-accent-hover disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer shrink-0"
+            className="px-5 py-2.5 rounded-lg bg-accent text-bg font-mono text-[11px] tracking-[0.1em] uppercase hover:bg-accent-hover disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer shrink-0"
           >
             {stage === 'validating' ? 'Validating...' : 'Validate →'}
           </button>
@@ -179,7 +179,7 @@ export function RegisterForm() {
       {result && (
         <div className="space-y-6">
           <div className="rounded-lg border border-border bg-surface p-5 space-y-3">
-            <h3 className="text-sm font-medium">Validation Checks</h3>
+            <h3 className="font-display text-[18px] leading-[1.2]">Validation Checks</h3>
             <div className="space-y-2">
               <Check
                 pass={result.discovery.ok || result.discovery.paidEndpoints > 0}
@@ -243,7 +243,7 @@ export function RegisterForm() {
           {/* Endpoint Preview */}
           {result.discovery.paidEndpoints > 0 && (
             <div className="rounded-lg border border-border bg-surface p-5 space-y-3">
-              <h3 className="text-sm font-medium">Preview</h3>
+              <h3 className="font-display text-[18px] leading-[1.2]">Preview</h3>
               <div className="space-y-1">
                 <div className="text-base font-medium">{result.discovery.title}</div>
                 <div className="text-xs text-muted">
@@ -282,7 +282,7 @@ export function RegisterForm() {
             <button
               onClick={handleRegister}
               disabled={stage === 'registering'}
-              className="w-full py-3 rounded-lg bg-accent text-bg font-medium hover:bg-accent-hover disabled:opacity-40 transition-colors cursor-pointer text-sm"
+              className="w-full py-3 rounded-lg bg-accent text-bg font-mono text-[11px] tracking-[0.1em] uppercase hover:bg-accent-hover disabled:opacity-40 transition-colors cursor-pointer"
             >
               {stage === 'registering' ? 'Registering...' : 'Register Server'}
             </button>
@@ -308,7 +308,7 @@ export function RegisterForm() {
 
       {/* Help Footer */}
       <div className="border-t border-border pt-6 space-y-2">
-        <span className="text-xs text-muted">Need help?</span>
+        <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">Need help?</span>
         <div className="flex flex-wrap gap-4">
           {[
             { href: '/discovery', label: 'Discovery Spec' },

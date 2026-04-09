@@ -96,7 +96,7 @@ export function DiscoveryContent() {
   return (
     <article className="space-y-12">
       <header className="space-y-3">
-        <h1 className="text-2xl font-medium">Discovery Spec</h1>
+        <h1 className="font-display text-[32px] leading-[1.1]">Discovery Spec</h1>
         <p className="text-sm text-muted max-w-xl leading-relaxed">
           How to make your MPP server discoverable by agents. Publish an OpenAPI
           document, return proper 402 challenges, and validate with our CLI.
@@ -130,7 +130,7 @@ export function DiscoveryContent() {
         </p>
 
         <div className="mt-4 space-y-3">
-          <h3 className="text-sm font-medium text-text">Required fields</h3>
+          <h3 className="font-display text-[18px] leading-[1.2] text-text">Required fields</h3>
           <div className="rounded-lg border border-border overflow-hidden">
             <table className="w-full text-xs">
               <thead>
@@ -163,7 +163,7 @@ export function DiscoveryContent() {
         </div>
 
         <div className="mt-6">
-          <h3 className="text-sm font-medium text-text mb-3">Minimal valid example</h3>
+          <h3 className="font-display text-[18px] leading-[1.2] text-text mb-3">Minimal valid example</h3>
           <CopyBlock title="/openapi.json" code={MINIMAL_EXAMPLE} />
         </div>
       </Section>
@@ -206,7 +206,7 @@ export function DiscoveryContent() {
         </div>
 
         <div className="mt-4 rounded-lg border border-border bg-surface p-4 space-y-1">
-          <div className="text-xs font-medium text-text">Important</div>
+          <div className="font-mono text-[10px] tracking-[0.08em] uppercase text-text">Important</div>
           <div className="text-xs text-muted leading-relaxed">
             For fixed pricing, use <code className="text-text bg-bg px-1 py-0.5 rounded border border-border text-[11px] font-mono">price</code> (not &quot;amount&quot;).
             The 402 challenge uses <code className="text-text bg-bg px-1 py-0.5 rounded border border-border text-[11px] font-mono">amount</code>,
@@ -289,7 +289,7 @@ export function DiscoveryContent() {
           <li className="flex gap-3">
             <span className="shrink-0 w-6 h-6 rounded-full bg-border text-muted text-xs font-mono flex items-center justify-center">1</span>
             <div>
-              <span className="text-text font-medium text-sm">OpenAPI Discovery</span>
+              <span className="text-text font-display text-[18px] leading-[1.2]">OpenAPI Discovery</span>
               <div className="mt-1 text-xs text-muted">
                 Fetches <code className="text-text bg-surface px-1 py-0.5 rounded border border-border text-[11px] font-mono">/openapi.json</code>,
                 validates structure, extracts endpoints with <code className="text-text bg-surface px-1 py-0.5 rounded border border-border text-[11px] font-mono">x-payment-info</code>.
@@ -299,7 +299,7 @@ export function DiscoveryContent() {
           <li className="flex gap-3">
             <span className="shrink-0 w-6 h-6 rounded-full bg-border text-muted text-xs font-mono flex items-center justify-center">2</span>
             <div>
-              <span className="text-text font-medium text-sm">Endpoint Probe</span>
+              <span className="text-text font-display text-[18px] leading-[1.2]">Endpoint Probe</span>
               <div className="mt-1 text-xs text-muted">
                 Sends a request to the first payable endpoint, expects 402, verifies
                 <code className="text-text bg-surface px-1 py-0.5 rounded border border-border text-[11px] font-mono">WWW-Authenticate</code> header
@@ -372,7 +372,7 @@ export function DiscoveryContent() {
 
       {/* CTA */}
       <section className="rounded-lg border border-border bg-surface p-6 space-y-3">
-        <h3 className="text-sm font-medium">Ready to register?</h3>
+        <h3 className="font-display text-[18px] leading-[1.2]">Ready to register?</h3>
         <p className="text-xs text-muted leading-relaxed">
           Once your server passes validation, register it on suimpp.dev to appear
           in the server catalog and start tracking payments automatically.
@@ -380,7 +380,7 @@ export function DiscoveryContent() {
         <div className="flex gap-4 pt-1">
           <Link
             href="/register"
-            className="text-xs px-4 py-2 rounded-md bg-accent text-bg font-medium hover:bg-accent-hover transition-colors"
+            className="font-mono text-[11px] tracking-[0.1em] uppercase px-4 py-2 rounded-md bg-accent text-bg hover:bg-accent-hover transition-colors"
           >
             Register Server
           </Link>
@@ -388,7 +388,7 @@ export function DiscoveryContent() {
             href="https://www.npmjs.com/package/@suimpp/discovery"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-4 py-2 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
+            className="font-mono text-[11px] tracking-[0.1em] uppercase px-4 py-2 rounded-md border border-border text-muted hover:text-text hover:border-accent/50 transition-colors"
           >
             Validation CLI
           </a>
@@ -406,7 +406,7 @@ export function DiscoveryContent() {
           <a
             key={link.href}
             href={link.href}
-            className="flex items-center gap-2 text-xs text-muted hover:text-text transition-colors"
+            className="flex items-center gap-2 font-mono text-[10px] tracking-[0.08em] uppercase text-muted hover:text-text transition-colors"
           >
             <span className="text-muted">→</span>
             {link.label}
@@ -420,7 +420,7 @@ export function DiscoveryContent() {
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="space-y-3">
-      <h2 className="text-lg font-medium">{title}</h2>
+      <h2 className="font-display text-[24px] leading-[1.15]">{title}</h2>
       <div className="text-sm text-muted leading-relaxed [&_code]:text-text [&_code]:bg-surface [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:border [&_code]:border-border [&_code]:text-xs [&_code]:font-mono">
         {children}
       </div>

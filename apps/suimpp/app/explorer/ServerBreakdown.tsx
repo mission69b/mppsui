@@ -8,7 +8,7 @@ export function ServerBreakdown({ data }: ServerBreakdownProps) {
   if (data.length === 0) {
     return (
       <div className="rounded-lg border border-border bg-surface p-6">
-        <h3 className="text-sm font-medium mb-4">By Server</h3>
+        <h3 className="font-display text-[18px] leading-[1.2] mb-4">By Server</h3>
         <div className="h-48 flex items-center justify-center text-xs text-muted">
           No servers yet
         </div>
@@ -29,7 +29,7 @@ export function ServerBreakdown({ data }: ServerBreakdownProps) {
   return (
     <div className="rounded-lg border border-border bg-surface p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-sm font-medium">By Server</h3>
+        <h3 className="font-display text-[18px] leading-[1.2]">By Server</h3>
         <span className="text-[10px] font-mono text-muted">
           {data.length} {data.length === 1 ? 'server' : 'servers'}
         </span>

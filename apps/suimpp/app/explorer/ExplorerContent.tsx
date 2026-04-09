@@ -89,7 +89,7 @@ export function ExplorerContent() {
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <h1 className="text-2xl font-medium">Payment Explorer</h1>
+        <h1 className="font-display text-[32px] leading-[1.1]">Payment Explorer</h1>
         <p className="text-sm text-muted">
           On-chain proof that machine payments are real.
         </p>
@@ -125,7 +125,7 @@ export function ExplorerContent() {
       {/* Filter */}
       {stats && stats.byServer.length > 1 && (
         <div className="flex items-center gap-3">
-          <span className="text-xs text-muted">Filter:</span>
+          <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">Filter:</span>
           <select
             value={serverFilter}
             onChange={(e) => setServerFilter(e.target.value)}
