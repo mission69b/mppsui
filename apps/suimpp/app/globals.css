@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-bg: #FFFFFF;
-  --color-surface: #F7F7F7;
-  --color-border: #E5E5E5;
-  --color-text: #191919;
-  --color-muted: #707070;
-  --color-accent: #191919;
-  --color-accent-hover: #404040;
+  --color-bg: #0A0A0A;
+  --color-surface: #111111;
+  --color-border: #222222;
+  --color-text: #EDEDED;
+  --color-muted: #888888;
+  --color-accent: #EDEDED;
+  --color-accent-hover: #C8C8C8;
   --color-success: #3CC14E;
-  --color-warning: #B45309;
+  --color-warning: #D97706;
   --color-error: #F0201D;
 
   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
@@ -27,18 +27,18 @@ body {
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
 }
 
-/* sugar-high — dark palette for light backgrounds */
+/* sugar-high — light palette for dark backgrounds */
 .sh {
-  --sh-class: #1e40af;
-  --sh-identifier: #374151;
-  --sh-sign: #6b7280;
-  --sh-property: #1f2937;
-  --sh-entity: #1e40af;
-  --sh-jsxliterals: #1e40af;
-  --sh-string: #707070;
-  --sh-keyword: #374151;
-  --sh-comment: #9ca3af;
+  --sh-class: #7dd3fc;
+  --sh-identifier: #e2e8f0;
+  --sh-sign: #94a3b8;
+  --sh-property: #f0abfc;
+  --sh-entity: #7dd3fc;
+  --sh-jsxliterals: #7dd3fc;
+  --sh-string: #86efac;
+  --sh-keyword: #c4b5fd;
+  --sh-comment: #64748b;
 }
