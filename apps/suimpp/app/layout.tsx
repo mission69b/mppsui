@@ -39,6 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@t2000ai',
     title: 'suimpp — Machine Payments on Sui',
     description:
       'The open protocol for AI agents to pay for APIs with USDC on Sui.',
