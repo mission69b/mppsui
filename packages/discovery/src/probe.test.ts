@@ -35,6 +35,86 @@ describe('probe', () => {
     expect(result.recipient).toContain('0x');
   });
 
+  it('detects x402 accepts[] body with no WWW-Authenticate (t2000 serve dialect)', async () => {
+    mockFetch.mockResolvedValue(
+      make402({
+        x402Version: 1,
+        error: 'Payment required',
+        accepts: [
+          {
+            scheme: 'exact',
+            network: 'sui:mainnet',
+            asset: SUI_USDC_TYPE,
+            maxAmountRequired: '10000',
+            payTo: '0xd437a1fb5d9f5f233687b0be58cfbf06b7d9a7589a56194978b8bdb4515b45d3',
+            resource: 'https://market-scout-api.vercel.app/haiku',
+          },
+        ],
+      }),
+    );
+
+    const result = await probe(
+      'https://market-scout-api.vercel.app/haiku',
+      'https://market-scout-api.vercel.app',
+    );
+    expect(result.ok).toBe(true);
+    expect(result.hasSuiPayment).toBe(true);
+    expect(result.recipient).toBe(
+      '0xd437a1fb5d9f5f233687b0be58cfbf06b7d9a7589a56194978b8bdb4515b45d3',
+    );
+    expect(result.currency).toBe(SUI_USDC_TYPE);
+    // maxAmountRequired is raw 6-decimal units; amount is the decimal string
+    expect(result.amount).toBe('0.01');
+    expect(result.realm).toBe('market-scout-api.vercel.app');
+  });
+
+  it('prefers sui:mainnet among multiple accepts entries', async () => {
+    mockFetch.mockResolvedValue(
+      make402({
+        accepts: [
+          { scheme: 'exact', network: 'sui:testnet', payTo: '0xaaa1', asset: SUI_USDC_TYPE, maxAmountRequired: '500' },
+          { scheme: 'exact', network: 'sui:mainnet', payTo: '0xbbb2', asset: SUI_USDC_TYPE, maxAmountRequired: '20000' },
+          { scheme: 'exact', network: 'base', payTo: '0xccc3' },
+        ],
+      }),
+    );
+
+    const result = await probe('https://example.com/api');
+    expect(result.recipient).toBe('0xbbb2');
+    expect(result.amount).toBe('0.02');
+  });
+
+  it('rejects garbage accepts[] (no sui exact entry / no payTo)', async () => {
+    mockFetch.mockResolvedValue(
+      make402({
+        accepts: [
+          { scheme: 'exact', network: 'base', payTo: '0x1' },
+          { scheme: 'upto', network: 'sui:mainnet', payTo: '0x2' },
+          { scheme: 'exact', network: 'sui:mainnet' },
+          'not-an-object',
+        ],
+      }),
+    );
+
+    const result = await probe('https://example.com/api');
+    expect(result.ok).toBe(false);
+    expect(result.issues[0].code).toBe(VALIDATION_CODES.PROBE_FAILED);
+  });
+
+  it('keeps raw units when the asset is not a known USDC type', async () => {
+    mockFetch.mockResolvedValue(
+      make402({
+        accepts: [
+          { scheme: 'exact', network: 'sui:mainnet', payTo: '0xabc1', asset: '0xother::coin::COIN', maxAmountRequired: '10000' },
+        ],
+      }),
+    );
+
+    const result = await probe('https://example.com/api');
+    expect(result.amount).toBe('10000');
+    expect(result.issues.find(i => i.code === VALIDATION_CODES.PROBE_UNKNOWN_CURRENCY)).toBeDefined();
+  });
+
   it('reports error for non-402 response', async () => {
     mockFetch.mockResolvedValue({
       status: 200,

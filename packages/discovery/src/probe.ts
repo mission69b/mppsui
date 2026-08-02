@@ -19,6 +19,48 @@ function decodeRequest(encoded: string): Record<string, string> {
   return {};
 }
 
+interface X402Accept {
+  scheme?: unknown;
+  network?: unknown;
+  payTo?: unknown;
+  asset?: unknown;
+  maxAmountRequired?: unknown;
+  resource?: unknown;
+}
+
+/** x402 `accepts[]` entry → the MPP challenge shape the rest of probe() reads.
+ *  `maxAmountRequired` is raw 6-decimal USDC units; the header dialect's
+ *  `amount` is a decimal string — convert (known-USDC only) so `amount` means
+ *  the same thing whichever dialect answered. */
+function challengeFromAccepts(accepts: unknown): MppChallenge | null {
+  if (!Array.isArray(accepts)) return null;
+  const sui = accepts.filter(
+    (a: X402Accept) =>
+      a &&
+      typeof a === 'object' &&
+      a.scheme === 'exact' &&
+      typeof a.network === 'string' &&
+      a.network.startsWith('sui'),
+  ) as X402Accept[];
+  const entry = sui.find(a => a.network === 'sui:mainnet') ?? sui[0];
+  if (!entry || typeof entry.payTo !== 'string') return null;
+
+  const challenge: MppChallenge = { recipient: entry.payTo };
+  if (typeof entry.asset === 'string') challenge.currency = entry.asset;
+  if (typeof entry.maxAmountRequired === 'string' && /^\d+$/.test(entry.maxAmountRequired)) {
+    challenge.amount =
+      typeof entry.asset === 'string' && KNOWN_SUI_CURRENCIES.has(entry.asset)
+        ? (Number(entry.maxAmountRequired) / 1_000_000).toString()
+        : entry.maxAmountRequired;
+  }
+  if (typeof entry.resource === 'string') {
+    try {
+      challenge.realm = new URL(entry.resource).hostname;
+    } catch {}
+  }
+  return challenge;
+}
+
 function extractChallenge(headers: Headers, body: unknown): MppChallenge | null {
   const wwwAuth = headers.get('www-authenticate');
   if (wwwAuth) {
@@ -43,6 +85,11 @@ function extractChallenge(headers: Headers, body: unknown): MppChallenge | null 
     if (b.paymentRequirements && typeof b.paymentRequirements === 'object') {
       return b.paymentRequirements as MppChallenge;
     }
+
+    // x402 body-only sellers (@t2000/serve emits accepts[] and no
+    // WWW-Authenticate) — the dialect this probe rejected until 0.2.2.
+    const fromAccepts = challengeFromAccepts(b.accepts);
+    if (fromAccepts) return fromAccepts;
   }
 
   return null;
