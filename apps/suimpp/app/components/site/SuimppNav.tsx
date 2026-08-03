@@ -120,23 +120,6 @@ export function SuimppNav({ currentPage }: SuimppNavProps) {
           t2000.ai&nbsp;↗
         </a>
 
-        <a
-          href="https://mpp.t2000.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontSize: 12,
-            color: "var(--fg-subtle)",
-            fontFamily: "var(--font-mono)",
-            letterSpacing: "0.01em",
-            textDecoration: "none",
-            whiteSpace: "nowrap",
-            transition: "color var(--dur-fast) var(--ease-out)",
-          }}
-          className="hover:!text-[var(--fg)]"
-        >
-          mpp.t2000.ai&nbsp;↗
-        </a>
       </div>
     </nav>
   );

@@ -61,7 +61,7 @@ currency presets. The SDK handles gasless tier behavior automatically.
 ### Validate a Server
 
 ```bash
-npx @suimpp/discovery check mpp.t2000.ai
+npx @suimpp/discovery check api.your-service.dev
 ```
 
 ## What is MPP?
@@ -240,7 +240,7 @@ result.summary         // { totalIssues, errors, warnings }
 
 ```bash
 # CLI usage
-npx @suimpp/discovery check mpp.t2000.ai
+npx @suimpp/discovery check api.your-service.dev
 
 # Output:
 # ✓ OpenAPI document found at /openapi.json

@@ -2,7 +2,7 @@ export function SuimppFooter() {
   const links = [
     { l: "GitHub ↗", href: "https://github.com/mission69b/suimpp" },
     { l: "t2000.ai ↗", href: "https://t2000.ai" },
-    { l: "mpp.t2000.ai ↗", href: "https://mpp.t2000.ai" },
+    { l: "docs.t2000.ai ↗", href: "https://docs.t2000.ai" },
     { l: "audric.ai ↗", href: "https://audric.ai" },
   ];
 
