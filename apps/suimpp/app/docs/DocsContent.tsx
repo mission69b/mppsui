@@ -51,7 +51,7 @@ export function DocsContent() {
         </pre>
         <p>The validation CLI is invoked via <code>npx</code> — no install needed:</p>
         <pre>
-          <code>npx @suimpp/discovery check mpp.t2000.ai</code>
+          <code>npx @suimpp/discovery check api.your-service.dev</code>
         </pre>
 
         <h2>Accept payments (server)</h2>
@@ -114,7 +114,7 @@ const response = await mppx.fetch('https://api.example.com/resource');`}</code>
           fetches the OpenAPI, probes a paid route, and reports violations.
         </p>
         <pre>
-          <code>{`$ npx @suimpp/discovery check mpp.t2000.ai
+          <code>{`$ npx @suimpp/discovery check api.your-service.dev
 
 ✓ OpenAPI document found at /openapi.json
 ✓ 88 payable endpoints detected
@@ -185,14 +185,14 @@ const mppx = Mppx.create({
           </li>
           <li>
             <a
-              href="https://mpp.t2000.ai"
+              href="https://t2000.ai"
               target="_blank"
               rel="noopener noreferrer"
             >
-              mpp.t2000.ai
+              t2000.ai
             </a>{" "}
-            — a live MPP gateway. Browse the catalog, see its 402 challenges,
-            copy curl examples.
+            — the live x402 seller marketplace on Sui: browse sellers, hit
+            their 402 challenges, pay with the t2 CLI.
           </li>
         </ul>
       </article>

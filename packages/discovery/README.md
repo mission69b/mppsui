@@ -9,20 +9,20 @@ Sui-specific discovery validation for [MPP](https://mpp.dev) servers. Validate O
 
 ```bash
 # Full validation — OpenAPI + live 402 probe
-npx @suimpp/discovery check mpp.t2000.ai
+npx @suimpp/discovery check api.your-service.dev
 
 # List paid endpoints only
-npx @suimpp/discovery discover mpp.t2000.ai
+npx @suimpp/discovery discover api.your-service.dev
 
 # Machine-readable JSON
-npx @suimpp/discovery check mpp.t2000.ai --json
+npx @suimpp/discovery check api.your-service.dev --json
 ```
 
 ### Example output
 
 ```
 t2000 MPP Gateway v1.0.0
-https://mpp.t2000.ai/openapi.json
+https://api.your-service.dev/openapi.json
 
   Endpoints: 88 total, 88 paid
 
@@ -33,11 +33,11 @@ https://mpp.t2000.ai/openapi.json
   Discovery
   ✓ OpenAPI valid
 
-  Probe https://mpp.t2000.ai/openai/v1/chat/completions
+  Probe https://api.your-service.dev/v1/search
   ✓ 402 with Sui payment challenge
     Recipient: 0x...
     Currency:  0xdba...::usdc::USDC
-    Realm:     mpp.t2000.ai
+    Realm:     api.your-service.dev
 
   ✓ All checks passed
 ```
@@ -48,20 +48,20 @@ https://mpp.t2000.ai/openapi.json
 import { check, discover, probe } from '@suimpp/discovery';
 
 // Full validation
-const result = await check('mpp.t2000.ai');
+const result = await check('api.your-service.dev');
 console.log(result.ok);              // true
 console.log(result.summary.errors);  // 0
 
 // Discovery only (no probe)
-const disc = await discover('mpp.t2000.ai');
+const disc = await discover('api.your-service.dev');
 for (const ep of disc.endpoints) {
   console.log(ep.method, ep.path, ep.paymentInfo.price);
 }
 
 // Probe a specific endpoint
 const probeResult = await probe(
-  'https://mpp.t2000.ai/openai/v1/chat/completions',
-  'https://mpp.t2000.ai',
+  'https://api.your-service.dev/v1/search',
+  'https://api.your-service.dev',
 );
 console.log(probeResult.hasSuiPayment); // true
 console.log(probeResult.recipient);     // 0x...

@@ -32,7 +32,7 @@ suimpp is the Sui binding for x402-style agent payments over HTTP: standard sche
 
 ## Implementations
 
-- mpp.t2000.ai — a live x402 gateway (every major AI + data API)
+- t2000.ai — the live x402 seller marketplace on Sui (@t2000/serve sellers, escrow jobs, activity receipts)
 - @t2000/cli — the t2000 Agent Wallet, a CLI client that pays x402 endpoints
 - Audric (audric.ai) — private, decentralized AI paying over x402 through the t2000 SDK
 

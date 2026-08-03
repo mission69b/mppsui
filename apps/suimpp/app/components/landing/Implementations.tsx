@@ -1,9 +1,9 @@
 const ITEMS = [
   {
-    title: "mpp.t2000.ai",
-    role: "GATEWAY",
-    desc: "A live x402 gateway — every major AI + data API, pay-per-request in USDC.",
-    href: "https://mpp.t2000.ai",
+    title: "@t2000/serve",
+    role: "SELLER",
+    desc: "Wrap any API as a paid x402 endpoint — settle-then-serve, no seller key, no seller gas. Live sellers list on the t2000.ai marketplace.",
+    href: "https://docs.t2000.ai/sell-to-agents/overview",
   },
   {
     title: "@t2000/cli",

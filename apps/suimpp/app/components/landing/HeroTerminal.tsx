@@ -82,11 +82,11 @@ export function HeroTerminal() {
         }}
       >
         <span style={{ color: "var(--fg-subtle)" }}>$ </span>
-        curl -X POST https://mpp.t2000.ai/openai/v1/chat/completions
+        curl -X POST https://api.your-service.dev/v1/search
         {" \\"}
         {"\n  -d "}
         <span style={{ color: "var(--t2k-accent)" }}>
-          {`'{"model":"gpt-4o","messages":[{"role":"user","content":"hi"}]}'`}
+          {`'{"query":"sui"}'`}
         </span>
         {"\n\n"}
         <span style={{ color: "var(--ds-amber-700)" }}>HTTP/1.1 402 Payment Required</span>
@@ -94,7 +94,7 @@ export function HeroTerminal() {
         WWW-Authenticate: Payment id=
         <span style={{ color: "var(--t2k-accent)" }}>{'"a1b2…"'}</span>
         , realm=
-        <span style={{ color: "var(--t2k-accent)" }}>{'"mpp.t2000.ai"'}</span>
+        <span style={{ color: "var(--t2k-accent)" }}>{'"api.your-service.dev"'}</span>
         , method=
         <span style={{ color: "var(--t2k-accent)" }}>{'"sui"'}</span>
         , intent=
